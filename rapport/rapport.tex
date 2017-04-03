@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[frenchb]{babel}
 
-\title{Implémentation de time-stretching en temps réel en Overtone}
+\title{Time stretching en temps réel pour le live coding}
 \author{Abdeselam El-Haman Abdeselam$^{1}$\\
 Superviseur : Bernard Fortz
 \mbox{}\\\\
@@ -15,18 +15,15 @@ aelhaman@ulb.ac.be}
 \maketitle
 
 \begin{abstract}
-  We analyze the geometry of the species-- and genotype-size
-  distribution in evolving and adapting populations of single-stranded
-  self-replicating genomes: here programs in the Avida world.  We find
-  that a scale-free distribution (power law) emerges in complex
-  landscapes that achieve a separation of two fundamental time scales:
-  the relaxation time (time for population to return to equilibrium
-  after a perturbation) and the time between mutations that produce
-  fitter genotypes. The latter can be dialed by changing the mutation
-  rate.  In the scaling regime, we determine the
-  critical exponent of the distribution of sizes and strengths of
-  avalanches in a system without coevolution, described by first-order
-  phase transitions in single finite niches.
+  Overtone est une libraire en Clojure qui est utilisée pour faire du
+  Live Coding (l'art de programmer en \og vif \fg{}). Une des techniques les
+  plus utilisées dans le domaine de la musique synthétisée est le
+  time-stretching, qui consiste à rallonger ou ratraicir une pièce musicale
+  sans changer sa tonalité. Le time-stretching est intéressant dans pour
+  le live-coding lorsqu'on peut modifier les paramétres de celui-ci
+  en temps réel. Dans cet article 2 méthodes de time-stretching seront
+  analysées et comparées et utilisées en temps réel dans Overtone.
+
 \end{abstract}
 
 \section{Introduction}
