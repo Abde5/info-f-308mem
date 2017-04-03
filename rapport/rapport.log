@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Arch Linux) (preloaded format=pdflatex 2017.4.3)  3 APR 2017 23:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Arch Linux) (preloaded format=pdflatex 2017.4.3)  4 APR 2017 01:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -527,65 +527,40 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <9> on input line 19.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 29.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 30.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 32.
 
-Package natbib Warning: Citation `BTW87' on page 1 undefined on input line 34.
-
-
-Package natbib Warning: Citation `BTW88' on page 1 undefined on input line 34.
-
-
-Package natbib Warning: Citation `SJD' on page 1 undefined on input line 39.
+Package natbib Warning: Citation `WIL' on page 1 undefined on input line 39.
 
 
-Package natbib Warning: Citation `GS' on page 1 undefined on input line 41.
+Package natbib Warning: Citation `GE77' on page 1 undefined on input line 40.
 
 
-Package natbib Warning: Citation `CA2' on page 1 undefined on input line 44.
+Package natbib Warning: Citation `GE93' on page 1 undefined on input line 40.
 
 
-Package natbib Warning: Citation `AB1' on page 1 undefined on input line 48.
+Package natbib Warning: Citation `ECL96' on page 1 undefined on input line 47.
 
 
-Package natbib Warning: Citation `OBA' on page 1 undefined on input line 48.
+Package natbib Warning: Citation `BS' on page 1 undefined on input line 53.
 
 
-Package natbib Warning: Citation `CA2' on page 1 undefined on input line 50.
+Package natbib Warning: Citation `SB96' on page 1 undefined on input line 56.
 
 
-Package natbib Warning: Citation `BUR90' on page 1 undefined on input line 58.
+Package natbib Warning: Citation `BP96' on page 1 undefined on input line 56.
 
 
-Package natbib Warning: Citation `BUR93' on page 1 undefined on input line 58.
+Package natbib Warning: Citation `NFST' on page 1 undefined on input line 60.
 
 
-Package natbib Warning: Citation `WIL' on page 1 undefined on input line 66.
+Package natbib Warning: Citation `IAL' on page 1 undefined on input line 67.
 
 
-Package natbib Warning: Citation `GE77' on page 1 undefined on input line 67.
+Underfull \vbox (badness 3000) has occurred while \output is active []
 
-
-Package natbib Warning: Citation `GE93' on page 1 undefined on input line 67.
-
-
-Package natbib Warning: Citation `ECL96' on page 1 undefined on input line 74.
-
-
-Package natbib Warning: Citation `BS' on page 1 undefined on input line 80.
-
-
-Package natbib Warning: Citation `SB96' on page 1 undefined on input line 83.
-
-
-Package natbib Warning: Citation `BP96' on page 1 undefined on input line 83.
-
-
-Package natbib Warning: Citation `NFST' on page 1 undefined on input line 87.
-
-
-Package natbib Warning: Citation `IAL' on page 1 undefined on input line 94.
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 
@@ -598,36 +573,35 @@ Package epstopdf Info: Source file: <fig1.eps>
 (epstopdf)                    size: 6693 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig1-eps-converted-to.pdf 
 fig1.eps>
-(epstopdf)             \includegraphics on input line 171.
+(epstopdf)             \includegraphics on input line 144.
 Package epstopdf Info: Output file is already uptodate.
 
-<fig1-eps-converted-to.pdf, id=12, 315.1775pt x 386.44376pt>
+<fig1-eps-converted-to.pdf, id=18, 315.1775pt x 386.44376pt>
 File: fig1-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig1-eps-converted-to.pdf>
-Package pdftex.def Info: fig1-eps-converted-to.pdf used on input line 171.
+Package pdftex.def Info: fig1-eps-converted-to.pdf used on input line 144.
 (pdftex.def)             Requested size: 151.76744pt x 186.08646pt.
 
 
-Package natbib Warning: Citation `CHU' on page 2 undefined on input line 183.
+Package natbib Warning: Citation `CHU' on page 2 undefined on input line 156.
 
-[2 <./fig1-eps-converted-to.pdf>]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 214.
-
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 187.
 
 (/usr/share/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 
-Package natbib Warning: Citation `OBA' on page 3 undefined on input line 217.
+Package natbib Warning: Citation `OBA' on page 2 undefined on input line 190.
 
 
-Underfull \hbox (badness 1460) in paragraph at lines 206--222
+Underfull \hbox (badness 1460) in paragraph at lines 179--195
 []\OT1/ptm/m/n/10 In this par-ti-cu-lar sys-tem ava-lanche size can be ap-
  []
 
+[2 <./fig1-eps-converted-to.pdf>]
 
-Package natbib Warning: Citation `CHU' on page 3 undefined on input line 256.
+Package natbib Warning: Citation `CHU' on page 3 undefined on input line 229.
 
 Package epstopdf Info: Source file: <fig2.eps>
 (epstopdf)                    date: 2017-04-03 22:06:19
@@ -637,17 +611,17 @@ Package epstopdf Info: Source file: <fig2.eps>
 (epstopdf)                    size: 8556 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig2-eps-converted-to.pdf 
 fig2.eps>
-(epstopdf)             \includegraphics on input line 268.
+(epstopdf)             \includegraphics on input line 241.
 Package epstopdf Info: Output file is already uptodate.
-<fig2-eps-converted-to.pdf, id=25, 307.1475pt x 420.57124pt>
+<fig2-eps-converted-to.pdf, id=26, 307.1475pt x 420.57124pt>
 File: fig2-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig2-eps-converted-to.pdf>
-Package pdftex.def Info: fig2-eps-converted-to.pdf used on input line 268.
+Package pdftex.def Info: fig2-eps-converted-to.pdf used on input line 241.
 (pdftex.def)             Requested size: 166.2212pt x 227.60565pt.
 
 
-Package natbib Warning: Citation `LT94' on page 3 undefined on input line 295.
+Package natbib Warning: Citation `LT94' on page 3 undefined on input line 268.
 
 [3 <./fig2-eps-converted-to.pdf>]
 Package epstopdf Info: Source file: <fig3.eps>
@@ -658,14 +632,14 @@ Package epstopdf Info: Source file: <fig3.eps>
 (epstopdf)                    size: 28793 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig3-eps-converted-to.pdf 
 fig3.eps>
-(epstopdf)             \includegraphics on input line 343.
+(epstopdf)             \includegraphics on input line 316.
 Package epstopdf Info: Output file is already uptodate.
 
 <fig3-eps-converted-to.pdf, id=34, 303.1325pt x 405.515pt>
 File: fig3-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig3-eps-converted-to.pdf>
-Package pdftex.def Info: fig3-eps-converted-to.pdf used on input line 343.
+Package pdftex.def Info: fig3-eps-converted-to.pdf used on input line 316.
 (pdftex.def)             Requested size: 162.6075pt x 217.52692pt.
 Package epstopdf Info: Source file: <fig4.eps>
 (epstopdf)                    date: 2017-04-03 22:06:19
@@ -675,18 +649,18 @@ Package epstopdf Info: Source file: <fig4.eps>
 (epstopdf)                    size: 28536 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig4-eps-converted-to.pdf 
 fig4.eps>
-(epstopdf)             \includegraphics on input line 365.
+(epstopdf)             \includegraphics on input line 338.
 Package epstopdf Info: Output file is already uptodate.
 
 <fig4-eps-converted-to.pdf, id=35, 303.1325pt x 405.515pt>
 File: fig4-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig4-eps-converted-to.pdf>
-Package pdftex.def Info: fig4-eps-converted-to.pdf used on input line 365.
+Package pdftex.def Info: fig4-eps-converted-to.pdf used on input line 338.
 (pdftex.def)             Requested size: 162.6075pt x 217.52692pt.
 
 
-Package natbib Warning: Citation `ABH' on page 4 undefined on input line 376.
+Package natbib Warning: Citation `ABH' on page 4 undefined on input line 349.
 
 Package epstopdf Info: Source file: <fig5.eps>
 (epstopdf)                    date: 2017-04-03 22:06:19
@@ -696,19 +670,16 @@ Package epstopdf Info: Source file: <fig5.eps>
 (epstopdf)                    size: 5824 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig5-eps-converted-to.pdf 
 fig5.eps>
-(epstopdf)             \includegraphics on input line 381.
+(epstopdf)             \includegraphics on input line 354.
 Package epstopdf Info: Output file is already uptodate.
 <fig5-eps-converted-to.pdf, id=36, 282.05376pt x 394.47375pt>
 File: fig5-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig5-eps-converted-to.pdf>
-Package pdftex.def Info: fig5-eps-converted-to.pdf used on input line 381.
+Package pdftex.def Info: fig5-eps-converted-to.pdf used on input line 354.
 (pdftex.def)             Requested size: 158.99377pt x 222.36644pt.
 
-Underfull \vbox (badness 1917) has occurred while \output is active []
-
- [4 <./fig3-eps-converted-to.pdf> <./fig4-eps-converted-to.pdf>]
-Underfull \hbox (badness 1629) in paragraph at lines 425--426
+Underfull \hbox (badness 1629) in paragraph at lines 398--399
 []\OT1/ptm/m/n/10 This work was sup-por-ted by NSF grant No. PHY-
  []
 
@@ -716,15 +687,15 @@ No file rapport.bbl.
 
 Package natbib Warning: There were undefined citations.
 
-[5
+[4 <./fig3-eps-converted-to.pdf> <./fig4-eps-converted-to.pdf>] [5
 
  <./fig5-eps-converted-to.pdf>] (./rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 3391 strings out of 493013
- 45077 string characters out of 6139318
+ 3388 strings out of 493013
+ 45096 string characters out of 6139318
  120873 words of memory out of 5000000
- 6874 multiletter control sequences out of 15000+600000
- 22936 words of font info for 47 fonts, out of 8000000 for 9000
+ 6870 multiletter control sequences out of 15000+600000
+ 25069 words of font info for 50 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  40i,11n,30p,339b,439s stack positions out of 5000i,500n,10000p,200000b,80000s
  </usr/share/texmf-dist/fonts/
@@ -742,7 +713,7 @@ pk/ljfour/public/cm/dpi600/cmr8.pk></usr/share/texmf-dist/fonts/type1/urw/couri
 er/ucrr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/sha
 re/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/typ
 e1/urw/times/utmri8a.pfb>
-Output written on rapport.pdf (5 pages, 166155 bytes).
+Output written on rapport.pdf (5 pages, 164631 bytes).
 PDF statistics:
  189 PDF objects out of 1000 (max. 8388607)
  83 compressed objects within 1 object stream
