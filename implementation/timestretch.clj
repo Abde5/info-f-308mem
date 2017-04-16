@@ -22,22 +22,35 @@
 
 
 ;; Granular live time stretching algorithm
+;; USED TO APPLY SOLA -> play a grain in the
 
-(defsynth grain [buf 1 startpos 0.0 dur 0.02 stretchrate 1]
-  "This synth will play a grain of the buffer stored in buf.
-      - buf : buffer number where sample is located.
-      - dur : duration in s (default 20ms).
-      - "
-  (let [rate     (buf-rate-scale buf)
-        n-frames (buf-frames buf)
-        env      (- 0.001 (env-gen (perc 0.01 dur) :action FREE))
-        phase    (phasor:ar :start 0 :end n-frames :rate stretchrate)
-        frames   (* phase n-frames)
-        gr       (play-buf 2 buf rate 1 frames)]
-    (out 0 (* gr env)))
-  )
+(defsynth granulator
+  "comment à écrire"
+  [buf 0 rate 1 gr-dur 0.1 start 0 end 1 out-bus 0 loop? 0 amp 1]
+  (let [n-frames     (buf-frames buf)
+        buf-rate     (buf-rate-scale buf)
+        rate         (* rate buf-rate)
+        start-pos    (* start n-frames)
+        end-pos      (* end n-frames)
+        trigger      (trig1:kr (sin-osc:kr ( / 1 (* gr-dur 0.6))) (* dur 0.4))
+        gr-env       (env-gen:kr (envelope [0 1 0] [(/ gr-dur 2) (/ gr-dur 2)] :sine)
+                                trigger :action FREE)
+        phase        (phasor:ar :start start-pos :end end-pos :rate rate)
+        signal       (* (play-buf:ar 2 buf buf-rate trigger phase) gr-env amp)]
+
+    (out out-bus (pan2 signal))
+   ))
+
+(def playing-granulator (granulator digitalbuf :rate 1 :start 0.1))
+(ctl playing-granulator :rate 1.2)
+
+(stop)
+
+;;;;;;;;;;;;;;;;;;;;;;;; TESTS ;;;;;;;;;;;;;;;;;;;;;;;;
 (demo (sin-osc))
-((sample "digital.wav"))
+
+(def digitalplaying ((sample "digital.wav")))
+(ctl digitalplaying :rate 1.5)
 (stop)
 
 (defsynth playbacker [buf 1]
@@ -45,6 +58,7 @@
 
 
 (def digitalbuf (load-sample "digital.wav"))
+(grain digitalbuf 234600)
 (stereo-partial-player digitalbuf)
 (stop)
 (demo (sin-osc))
