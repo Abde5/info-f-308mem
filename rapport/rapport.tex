@@ -66,30 +66,54 @@ aelhaman@ulb.ac.be}
   implémentés pour l'application en temps réel de cette technique sur Overtone, une librairie pour
   qui a été conçue pour le traitement et synthèse de son. 
 
-
-
-\begin{comment}
-  Parler du son c'est quoi frequence etc
-
-  C'est quoi le problème time stretching?
-  À quoi est-il dû?
-\end{comment}
-
 \section{État de l'art}
-\begin{comment}
-  Techniques, un peu d'histoire?
-\end{comment}
+\subsection{Méthode OLA}
+\paragraph{}En général la méthode utilisée dans les algorithmes TSM se résume en plusieures étapes
+distinctes.
 
-\subsection{Traitement du temps}
+\paragraph{Décomposer le signal d'entrée en grains} Le signal d'entrée est décomposé en
+\emph{grains} [citer article] d'une taille rélativement petite et fixe. Chacun de ces ces grains sa un décalage \emph{hopsize} $H_{a}$ (hopsize d'analyse). On peut représenter ça tel que:
+$$x_m(r) = x(r + mH_{a}) : r \in [-N/2 : N/2 -1]$$
+où $x$ est notre signal d'entrée en format discret de taille $L \in \mathbb{Z}_{\geq0}$. $N$ est la
+taille du grain $x_m$.
+
+La taille de ces grains doît est généralement d'une taille entre 50ms et 100ms. Ceci est important
+pour trouver le \emph{pitch local} dans l'intervale $[mH_{a} - N/2 : mH_{a} + N/2 +1]$. Si l'intervale
+est grand, plusieures tonalités apparaissent dans cet intervale, donc ce grain n'est pas représentatif.
+\paragraph{Modifier le hopsize} Une fois le signal décomposé, avec l'information de pitch dans chaque grain, on va définir un nouveau hopsize $H_{s}$ qui va servir à récomposer ces grains. Ce $H_{s}$ est défini tel que :
+
+$$H_{s} = \alpha H_{a}$$
+
+Dans lequel $\alpha$ représente le \emph{facteur d'échelle}.
+L'effet du TSM est fixé par le \emph{facteur d'échelle}. Pour un effet de rétrécissement:
+$$\alpha < 1$$
+
+Au contraire, pour un effet d'élargissement:
+$$\alpha > 1$$
+
+\paragraph{Superposition de grains}
+
+Avec $H_{s}$ défini, on peut réconstruire le signal résultat de cette modification, en récomposant
+le nouveau signal avec les grains avec un décalage de $H_{s}$ au lieu de $H_{a}$.
+
+\subsection{Méthode W/SOLA}
+
+\subsection{Méthode vocodeur de phases}
+
+\subsection{TD-PSOLA}
+
 \begin{comment}
 Parler de SOLA, PSOLA...
 \end{comment}
 
 \subsection{Traitement des fréquences}
+
 \begin{comment}
   Parler du Vocodeur de phases, comment c'est utilisé etc...
 \end{comment}
 \subsection{Traitement du temps et des fréquences}
+Des techniques SOLA peuvent déjà donner des 
+
 \begin{comment}
   On parle des techniques comme PVSOLA -> SOLA en prenant en compte la phase etc
 \end{comment}
@@ -115,7 +139,13 @@ synthétiseurs ``defsynth'' d'Overtone.
 \end{comment}
 
 \subsection{AWESOME OVERTONE TWEAK THINGS}
-\subsection{TD-SOLA}
+\subsection{SOLA approach / granulator}
+[Expliquer ce que c'est un granulator]
+
+Un granulator a été implementé sur Overtone en utilisant les UGENs suivants
+de SuperCollider:
+
+
 \subsection{Vocodeur de phases}
 
 
@@ -129,7 +159,10 @@ synthétiseurs ``defsynth'' d'Overtone.
   pour partager avec eux tout ce que j'ai appris lors de mes recherches
   pour ce mémoire.
 
+  [Remerciements à Antoine]
+
 \footnotesize
+
 \bibliographystyle{apalike}
 \bibliography{rapport}
 
