@@ -94,7 +94,30 @@ $$\alpha > 1$$
 \paragraph{Superposition de grains}
 
 Avec $H_{s}$ défini, on peut réconstruire le signal résultat de cette modification, en récomposant
-le nouveau signal avec les \emph{grains} avec un décalage de $H_{s}$ au lieu de $H_{a}$. Alors ces 
+le nouveau signal avec les \emph{grains} avec un décalage de $H_{s}$ au lieu de $H_{a}$. Alors ces
+grains sont superposés avec une différence de $H_{s}$ et additionés. C'est à dire:
+
+$$ y(t) = \sum_{m \in \mathbb{Z}} x_{m}(t-mH_{s})$$
+
+où $y(t)$ est le signal de sortie par rapport au temps $t$.
+u
+\paragraph {Fenêtrage}
+
+Hormis le fait que cette méthode est utilisée comme base des algorithmes qui seront illustrés plus
+tard dans ce document, elle crée beaucoup d'\emph{artéfacts} à cause d'un déphasage entre les
+grains qui provoque des discontinuités qui se traduit par des sons lourds et courts qui n'étaient pas
+dans le signal initial. Ceci est dû à cause d'un déphasage important entre les grains
+puisque $H_{s} \neq H_{a}$.
+
+\begin{figure}[h]
+    \centerline{\includegraphics[width=9cm]{res/artifact.png}}
+    \caption{\label{fig:artifact}Exemple d'artefact qui se produit quand le même grain d'analyse est
+      utilisé pour reconstruire le signal avec le tempo modifié. \cite{TSMreview} }
+  \end{figure}
+  
+L'algorithme \emph{OLA} se base sur cette méthode basique et rajoute des fénêtres pour avoir une
+fluidité dans la transition d'un grain à un autre. Les grains $x_m$ sont donc appliqués à une fonction
+de fênetrage $w$ \dots [a continuer demain]
 
 \subsection{Méthode W/SOLA}
 
