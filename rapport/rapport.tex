@@ -10,7 +10,7 @@
 
 \usepackage[hidelinks]{hyperref}
 
-\title{Time stretching en temps réel pour le live coding}
+\title{Time stretching en temps réel dans le cadre du live coding}
 \author{Abdeselam El-Haman Abdeselam$^{1}$\\
 Superviseur : Bernard Fortz
 \mbox{}\\\\
@@ -112,36 +112,51 @@ puisque $H_{s} \neq H_{a}$.
 \begin{figure}[h]
     \centerline{\includegraphics[width=9cm]{res/artifact.png}}
     \caption{\label{fig:artifact}Exemple d'artefact qui se produit quand le même grain d'analyse est
-      utilisé pour reconstruire le signal avec le tempo modifié. \cite{TSMreview} }
+      utilisé pour reconstruire le signal avec le tempo modifié (\cite{TSMreview}). }
   \end{figure}
   
 L'algorithme \emph{OLA} se base sur cette méthode basique et rajoute des fénêtres pour avoir une
 fluidité dans la transition d'un grain à un autre. Les grains $x_m$ sont donc appliqués à une fonction
-de fênetrage $w$ \dots [a continuer demain]
+de fênetrage $w$ qui est définie:
 
-\subsection{Méthode W/SOLA}
+$$ w(r) = \frac{1}{2} \bigg(1 - cos \bigg(\frac{2\pi(r + N/2)}{N-1}\bigg) \bigg) $$
 
+Où $w$ est la \emph{fenêtre de Hanning}.
+
+Cette fenêtre a la propriété que
+
+$$ \sum_{n \in \mathbb{Z}} w \bigg( r - n \frac{N}{2} \bigg) = 1 $$
+
+qui rassure la continuité d'amplitude dans le signal résultant. 
+
+\subsection{Méthode WSOLA}
+
+Le problème de la méthode OLA est que, étant le hopsize $H_a$ fixe, chaque séparation entre grains
+est le même, peu importe la différence de phase quand les grains sont décalés et réassemblés par
+rapport au hopsize $H_s$.
+
+L'algorithme \emph{WSOLA} (\cite{WSOLA}) régle ce problème en rajoutant un marge de décalage
+$\Delta_m$ au hopsize $H_a$ afin qu'entre les grains $x_m$ et $x_{m+1}$ il y ait un minimum de
+discontinuités.
+
+Ce décalage $\Delta_m$ est défini étant la position dans laquelle les parties superposées des grains
+$x_m$ et $x_{m+1}$ se ressemblent au plus. Pour ceci nous devons définit $\Delta_{max}$ étant le
+maximum que la valeur de $\Delta_m$ doit avoir. Alors $\Delta_m \in [-\Delta_{max} : \Delta_{max}]$.
+Nous avons alors le nouveau grain de synthèse
+$$ y_m(r) = x(r + mH_a + \Delta_m) \hspace{0.1cm} : \hspace{0.1cm} r \in [-N/2 : N/2 -1] $$
+qui va être superposé en suivant le procédé \emph{OLA} pour réassembler les grains décrit avant.
+
+\paragraph{Choix du décalage} $\Delta_m$ est choisi en trouvant la meilleure resultat si on applique
+une fonction de corrélation entre les parties des grains qui se superposent. Plusieures formules
+peuvent être choisies pour trouver une corrélation entre 2 variables (une regréssion linéaire, etc
+\dots). On peut utiliser le coefficient corrélation croisée à ce fin:
+
+$$ c_c (m,\delta) = \sum^{N-1}_{n=0} (n + \tau^{-1} ((m-1)N) + \Delta_{m-1}+N).x(n + \tau^{-1}(mx_m)+\delta)$$
+
+avec $max(m,\delta) \rightarrow \delta=\Delta_m$ et $\tau$ notre fonction de TSM.
 \subsection{Méthode vocodeur de phases}
 
-\subsection{TD-PSOLA}
-
-\begin{comment}
-Parler de SOLA, PSOLA...
-\end{comment}
-
-\subsection{Traitement des fréquences}
-
-\begin{comment}
-  Parler du Vocodeur de phases, comment c'est utilisé etc...
-\end{comment}
-\subsection{Traitement du temps et des fréquences}
-Des techniques SOLA peuvent déjà donner des 
-
-\begin{comment}
-  On parle des techniques comme PVSOLA -> SOLA en prenant en compte la phase etc
-\end{comment}
-
-\section{Méthodes}
+\section{Méthode développée}
 
 Les 2 méthodes qui ont été développées sont la granulation et le vocodeur de phases.
 Ces 2 méthodes ont été utilisées en utilisant la fonction le système de génération de
@@ -162,14 +177,11 @@ synthétiseurs ``defsynth'' d'Overtone.
 \end{comment}
 
 \subsection{AWESOME OVERTONE TWEAK THINGS}
-\subsection{SOLA approach / granulator}
+\subsection{OLA approach / granulator}
 [Expliquer ce que c'est un granulator]
 
 Un granulator a été implementé sur Overtone en utilisant les UGENs suivants
 de SuperCollider:
-
-
-\subsection{Vocodeur de phases}
 
 
 \section{Résultats}
