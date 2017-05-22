@@ -7,8 +7,11 @@
 \usepackage[T1]{fontenc}
 \usepackage{placeins, latexsym, amssymb}
 \usepackage{comment}
-
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage[hidelinks]{hyperref}
+\usepackage{verbatim}
+\usepackage{listings}
 
 \title{Time stretching en temps réel dans le cadre du live coding}
 \author{Abdeselam El-Haman Abdeselam$^{1}$\\
@@ -29,7 +32,7 @@ aelhaman@ulb.ac.be}
   time-stretching, qui consiste à rallonger ou rétrécir une pièce musicale
   sans changer sa tonalité. Le time-stretching est intéressant dans
   le live-coding lorsqu'on peut modifier les paramétres de celui-ci
-  en temps réel. Dans cet article 1 méthode de time-stretching avec des
+  en temps réel. Dans cet article une méthode de time-stretching avec des
   approches différentes sera analysée et utilisée en temps
   réel avec Overtone.
 
@@ -55,7 +58,7 @@ aelhaman@ulb.ac.be}
 
   \begin{figure}[h]
     \centerline{\includegraphics[width=9cm]{res/fig1.eps}}
-    \caption{\label{fig:guitar-stretch}Sample d'une guitare lu à des vitesses différents}
+    \caption{\label{fig:guitar-stretch}Échantillon d'une guitare lu à des vitesses différents}
   \end{figure}
   
   Le time-stretching est une technique pour éradiquer ce problème: changer le tempo d'un
@@ -197,40 +200,136 @@ la phase des grains modifiés pour avoir une continuité de phase entre les grai
       Fonctionnement du vocodeur de phases [\cite{TSMreview}]. (a) Les frames sont décomposés par le STFT. (b) Les phases des 2 frames sont clairement pas les mêmes si on les overlap sans les manipuler. (c) La phase des frames sont propagées pour avoir une correspondence. (d) ISTFT pour reconstruire le signal après avoir fait l'overlap des frames modifiés.}
   \end{figure}
 
-
-  % talk about clojure / supercollider / overtone now 
-  
 \section{Méthode développée}
 
-Les 2 méthodes qui ont été développées sont la granulation et le vocodeur de phases.
-Ces 2 méthodes ont été utilisées en utilisant la fonction le système de génération de
-synthétiseurs ``defsynth'' d'Overtone.
-\begin{comment}
-  Parler d'Overtone, Supercollider...
-  UGENs qu'on va utiliser: PVRecordBuf, PVPlayBuf..
-\end{comment}
 
-\subsection{Langages fonctionnels}
-\begin{comment}
-\end{comment}
+Le live-coding (aussi nommée \emph{programmation à la volée}) est une technique de programmation de
+façon improvisée afin d'avoir des résultats artistiques. Il existe plusieurs domaines dans lesquels
+le live coding s'applique, comme la génération de graphismes ou de la musique. Évidement, dans cet
+article l'approche musicale du live-coding a été exploitée pour pouvoir implémenter un algorithme
+de time stretching en temps réel.
 
-\subsection{Overtone}
-\begin{comment}
-  Parler d'Overtone-sup  Parler d'Overtone-supercollider, les methodes que ça nous donne etc
-  Parler d'Overtone-supercollider, les methodes que ça nous donne etc
-ercollider, les methodes que ça nous donne etc
-  [CITER ARTICLE SONICPI -> OVERTONE DE SAM AARON]
-\end{comment}
+J'ai implementé un granulateur qui utilise la méthode OLA basique. Pour faire cela j'ai utilisé la
+librairie \emph{Overtone} en Clojure qui est utilisée pour faire de la synthèse de son en temps
+réel et du live-coding en base de \emph{SuperCollider} [\cite{SonicPI}].
 
-\subsection{AWESOME OVERTONE TWEAK THINGS}
-\subsection{OLA approach / granulator}
-[Expliquer ce que c'est un granulator]
+\paragraph {Overtone}
 
-Un granulator a été implementé sur Overtone en utilisant les UGENs suivants
-de SuperCollider:
+Clojure est un langage fonctionnel qui a plusieures caractéristiques intéressantes dans notre sujet.
+Premièrement,en étant un langage fonctionnel hérité de Lisp, donc toutes les données sont manipuléss
+de façon mathématique avec des fonctions [\cite{Clojure}].\\
+Deuxièmement, Clojure utilise le interpreteur de ligne de comande \emph{Leiningen}, qui permet
+d'exécuter des commandes en temps réel tapées par l'utilisateur.
 
+\begin{figure}[h]
+    \centerline{\includegraphics[width=9cm]{res/synthetiseur.png}}
+    \caption{\label{fig:synthetiseur}
+      Fonctionnement d'un synthétiseur [\cite{TSMreview}].
+      Le fonctionnement d'un synthétiseur se résume en une ``boîte noire'' qui prend
+      un signal, le manipule (filtres, enveloppe, etc...) et ensuite fait un output.
+      Plusieures manipulations peuvent être imbriquées.
+    }
+  \end{figure}
 
+  D'un autre coté, SuperCollider est un environnement et un langage de programmation pour faire
+  de la synthèse en temps réel. SuperCollider fonctione basiquement avec des ``synth'' (synthétiseur)
+  qui prennent un signal (que ce soit une onde ou un buffer avec des segments temporels de son),
+  les manipule et puis les renvoit.
+  
+  Ces manipulations sont faites avec des UGens (Unit Generator) qui sont des blocs pour
+  analyser/synthétiser des sons (par exemple, un filtre passe bas, un oscilateur sinusoïdale,
+  un ugen pour lire un buffer, etc...). Les résultats d'un UGen peuvent être passés à un autre UGen
+  qui peut faire d'autres manipulations (voir Figure \ref{fig:synthetiseur}).
+  Aussi, les paramètres des ``synth'' sont modifiables en temps réel. C'est à dire, lorsque cet
+  instrument est en train de jouer, nous pouvons changer, par exemple, la modulation d'un filtre
+  et faire qu'il sonne différement lorsqu'il est lu par le serveur.
+  
+  Overtone profite du langage fonctionnel et les capacités de synthèse de SuperCollider pour faire
+  une liaison entre les 2, le fonctionnement des langages fonctionnels se ressemblant fortement
+  au fonctionnement des synthétiseurs.
+
+  \paragraph {Granulateur}
+  Le granulateur, comme son nom indique, est un synthétiseur qui manipule des grains comme on les a vu
+  précédement. Ce granulateur peut servir à implémenter beaucoup d'algorithmes avec des grains, mais
+  dans ce cas là nous allons l'utiliser pour implémenter un  algorithme OLA asynchrone.
+
+  Dans cette approche, le granulateur se compose d'un \emph{scheduler} et d'un
+  générateur de grains [\cite{RealTimeGrainsTSM}].\\
+  Le \emph{scheduler} s'occupe de lancer le bon grain au bon moment à la sortie grâce à des paramètres
+  pour définir le type de grain et à quelle vitesse les lancer. Dès qu'il veut lancer un grain, il
+  va génerer le grain dont on a besoin grâce au générateur de grains.
+
+  Pour ceci on va gérer 4 paramètres.
+  \begin{itemize}
+  \item \textbf{Le rate}
+  \item \textbf{La durée d'un grain}
+  \item \textbf{Le délai entre 2 grains}
+  \end{itemize}
+
+  Le fonctionnement de ce granulateur peut se résumer dans le pseudocode suivant:
+\begin{algorithm}                      % enter the algorithm environment
+\caption{Scheduler du granulator}      % give the algorithm a caption
+\label{alg:granulator}                 % and a label for \ref{} commands later in the document
+\begin{algorithmic}                    % enter the algorithmic environment
+
+\STATE scale $\Leftarrow$ le ratio  
+\STATE duration $\Leftarrow$ durée d'un grain
+\STATE delay $\Leftarrow$ délai entre grains grain 
+\STATE phasor $\Leftarrow$ pointeur dynamique qui avance au rythme du scale
+\STATE last $\Leftarrow$ le moment où le dernier grain a été lancé
+\STATE time $\Leftarrow$ le temps courant
+\STATE N $\Leftarrow$ la taille du morceau analysé
+\STATE last $=$ time
+
+\WHILE{$phasor<N$}
+
+\IF{time $\leq$ last + delay$*$duration}
+\STATE generateGrain(phasor, duration)
+\STATE last $=$ time
+\ENDIF
+\STATE phasor $=$ update(phasor)
+\STATE time $=$ update(time)
+\ENDWHILE
+  \end{algorithmic}
+\end{algorithm}
+
+Le phaseur est un pointeur dynamique qui va parcourir le fichier à lire à la vitesse du ratio passé
+en paramètre. Les fonctions update du pseudocode vont mettre a jour ces variables (par rapport au
+temps). La méthode generateGrain prend en paramètre un indice et la durée, donc cette méthode va
+renvoyer un grain qui commence à $phasor$ et qui finit à $phasor+duration$.
+
+\paragraph{Implementation}
+Ce granulateur a été implémenté en Overtone (voir Annexe pour code source) en définissant
+un ``synth'' (méthode defsynth), et pour créer ce synth on a utilisé les UGen suivants.
+L'UGen \verb+trig1+ est un fonction qui va activer l'ugen auquel on va lui associer, il
+prend une onde en paramètre (dans notre cas, un \verb+sin-osc+), il va server de \emph{scheduler}.
+Puis nous avons un \verb+phasor+ qui va parcourir le fichier à la vitesse définie par notre paramètre
+de ratio. On a donc associé notre trigger à un UGen \verb+env-gen+ qui va créer un grain grâce à
+une enveloppe basée sur la fenêtre de Hanning. Finalement un UGen \verb+play-buf+ va jouer le grain
+qui sera trig à la position du \verb+phasor+.
+
+Grâce au fait que ça a été défini dans un synth, les paramètres peuvent être modifiables lors de son
+exécution, nous donnant aussi la possibilité de le modifier en temps réel tel un VST ou ``plugin''
+[\cite{VST}].
+
+\paragraph {MIDI}
+
+\begin{figure}[h]
+    \centerline{\includegraphics[width=9cm]{res/mpd218.png}}
+    \caption{\label{fig:mpd218}
+      Instrument MIDI (Akai MPD218). Cet instrument a été utilisé pour
+      changer les paramètres du granulateur en temps réel.
+    }
+  \end{figure}
+
+À continuer demain
 \section{Résultats}
+
+% [ À FAIRE TABLEAU COMPARATIF DE STYLES]
+
+On va analyser les morceaux musicaux de différents styles et les paramètres qu'on a du utiliser
+pour 
+
 
 \section{Remerciements}
   Je remercie mon prometeur, Bernard Fortz, de m'avoir fait découvrir
@@ -240,12 +339,27 @@ de SuperCollider:
   pour partager avec eux tout ce que j'ai appris lors de mes recherches
   pour ce mémoire.
 
-  [Remerciements à Antoine]
+  Je voudrais aussi remercier mon collègue Antoine Passemiers pour m'avoir donné autant de conseils
+  lors de la réalisation de ce mémoire.
+
+  Et pour finir je voudrais remercier à Sam Aaaron pour tout son travail dans le domaine du live-coding
+  et de la pédagogie avec Overtone et Sonic Pi.
 
 \footnotesize
 
 \bibliographystyle{apalike}
 \bibliography{rapport}
 
+
+\begin{appendices}
+  \section{Démonstrations}
+  Lien vers une vidéo démonstration de l'usage du granulateur avec le MPD218: 
+  \url{https://twitter.com/Abdulitokun/status/866394006917451777}
+
+  Le code source, ainsi que le rapport se trouvent dans le lien suivant:
+  \url{https://github.com/Abde-/info-f-308mem}
+
+  
+\end{appendices}
 
 \end{document}
