@@ -12,6 +12,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{verbatim}
 \usepackage{listings}
+\usepackage{tabularx}
 
 \title{Time stretching en temps réel dans le cadre du live coding}
 \author{Abdeselam El-Haman Abdeselam$^{1}$\\
@@ -20,18 +21,18 @@ Superviseur : Bernard Fortz
 $^1$Université Libre de Bruxelles \\
 aelhaman@ulb.ac.be}
 
-\setlength{\parskip}{0.8em}
+\setlength{\parskip}{0.7em}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
   Overtone est une libraire en Clojure qui est utilisée pour faire du
-  Live Coding (l'art de programmer en \og vif \fg{}). Une des techniques les
+  Live Coding (l'art de programmer en temps réel). Une des techniques les
   plus utilisées dans le domaine de la musique synthétisée est le
   time-stretching, qui consiste à rallonger ou rétrécir une pièce musicale
   sans changer sa tonalité. Le time-stretching est intéressant dans
-  le live-coding lorsqu'on peut modifier les paramétres de celui-ci
+  le live-coding quand on peut modifier les paramétres de celui-ci
   en temps réel. Dans cet article une méthode de time-stretching avec des
   approches différentes sera analysée et utilisée en temps
   réel avec Overtone.
@@ -40,9 +41,9 @@ aelhaman@ulb.ac.be}
 
 \section{Introduction}
 
-  Depuis le débuts de la musique éléctronique, le ``resampling'' de pièces musicales
-  (c'est à dire, la manipulation de celles-ci) a un rôle important pour pouvoir manipuler
-  des pièces musicales (rajouter des filtres, des envelopes, etc \ldots ).
+  Depuis le début de la musique éléctronique, le ``resampling'' de pièces musicales
+  (c'est à dire, la manipulation de celles-ci) a un rôle important pour rajouter des filtres, des
+  envelopes, etc \ldots
 
   Un son est un signal qui est défini par sa durée, sa fréquence et son amplitude. La fréquence
   définit son ``pitch'' ou tonalité. La tonalité d'un son est plus grave si la fréquence est plus
@@ -52,7 +53,7 @@ aelhaman@ulb.ac.be}
   Ce genre de manipulations aident à rétrécir ou prolonger cette pièce pour, par exemple, mettre
   un son à la même vitesse que le ``tempo'' d'une chanson.
 
-  Cette manipulation aura comme résultat aussi un effet sécondaire. La prolongation du signal
+  Cette manipulation aura aussi comme résultat un effet sécondaire. La prolongation du signal
   provoquera aussi que la fréquence de ce signal soit modifié, et avec ça, un changement
   de tonalité non désiré se produira [\cite{RESAMPLING}].
 
@@ -65,24 +66,24 @@ aelhaman@ulb.ac.be}
   son sans changer sa tonalité.
 
   Plusieurs algorithmes existent pour implementer cette technique. Dans cet article l'état de
-  l'art du time-stretching sera étudié et plusieurs de ces algorithmes seront
-  implémentés pour l'application en temps réel de cette technique sur Overtone, une librairie pour
+  l'art du time-stretching sera étudié et un de ces algorithmes sera
+  implémenté en temps réel sur Overtone, une librairie pour
   qui a été conçue pour le traitement et synthèse de son. 
 
 \section{État de l'art}
 \subsection{Méthode OLA}
-\paragraph{}En général la méthode utilisée dans les algorithmes TSM se résume en plusieures étapes
+En général la méthode utilisée dans les algorithmes TSM se résume en plusieures étapes
 distinctes.
 
 \paragraph{Décomposer le signal d'entrée en grains} Le signal d'entrée est décomposé en
-\emph{grains} [citer article] d'une taille rélativement petite et fixe. Chacun de ces ces grains sa un décalage \emph{hopsize} $H_{a}$ (hopsize d'analyse). On peut représenter ça tel que:
+\emph{grains} d'une taille rélativement petite et fixe. Chacun de ces ces grains sa un décalage \emph{hopsize} $H_{a}$ (hopsize d'analyse). On peut représenter ça tel que:
 $$x_m(r) = x(r + mH_{a}) : r \in [-N/2 : N/2 -1]$$
 où $x$ est notre signal d'entrée en format discret de taille $L \in \mathbb{Z}_{\geq0}$. $N$ est la
 taille du grain $x_m$.
 
 La taille de ces grains doît est généralement d'une taille entre 50ms et 100ms. Ceci est important
 pour trouver le \emph{pitch local} dans l'intervale $[mH_{a} - N/2 : mH_{a} + N/2 +1]$. Si l'intervale
-est grand, plusieures tonalités apparaissent dans cet intervale, donc ce grain n'est pas représentatif.
+est grand, plusieures tonalités apparaissent dans cet intervale, donc ce grain n'est pas représentatif de la zone dans laquelle il se trouve.
 \paragraph{Modifier le hopsize} Une fois le signal décomposé, avec l'information de pitch dans chaque grain, on va définir un nouveau hopsize $H_{s}$ qui va servir à récomposer ces grains. Ce $H_{s}$ est défini tel que :
 
 $$H_{s} = \alpha H_{a}$$
@@ -192,7 +193,7 @@ qu'on pourra utiliser pour reconstruir $y$ de la même façon que pour les méth
 \paragraph{Déphasage} Les grains $X^{Mod}$ consécutifs auront des décalages de phase quand ils seront
 superposés (cf Figure 3),
 ce qui provoque des artefacts. Pour résoudre ce problème, le \emph{vocodeur de phases} décalera encore
-la phase des grains modifiés pour avoir une continuité de phase entre les grains superposés.
+la phase des grains modifiés pour avoir une continuité de phase entre les grains superposés [\cite{PHASEVOCODER}].
 
 \begin{figure}[h]
     \centerline{\includegraphics[width=9cm]{res/phasevocoder.png}}
@@ -254,7 +255,7 @@ d'exécuter des commandes en temps réel tapées par l'utilisateur.
   dans ce cas là nous allons l'utiliser pour implémenter un  algorithme OLA asynchrone.
 
   Dans cette approche, le granulateur se compose d'un \emph{scheduler} et d'un
-  générateur de grains [\cite{RealTimeGrainsTSM}].\\
+  générateur de grains [\cite{RealTimeGrainsTSM}, \cite{RealTimeGrains}].\\
   Le \emph{scheduler} s'occupe de lancer le bon grain au bon moment à la sortie grâce à des paramètres
   pour définir le type de grain et à quelle vitesse les lancer. Dès qu'il veut lancer un grain, il
   va génerer le grain dont on a besoin grâce au générateur de grains.
@@ -306,13 +307,16 @@ prend une onde en paramètre (dans notre cas, un \verb+sin-osc+), il va server d
 Puis nous avons un \verb+phasor+ qui va parcourir le fichier à la vitesse définie par notre paramètre
 de ratio. On a donc associé notre trigger à un UGen \verb+env-gen+ qui va créer un grain grâce à
 une enveloppe basée sur la fenêtre de Hanning. Finalement un UGen \verb+play-buf+ va jouer le grain
-qui sera trig à la position du \verb+phasor+.
+qui sera ``trig'' à la position du \verb+phasor+.
 
 Grâce au fait que ça a été défini dans un synth, les paramètres peuvent être modifiables lors de son
 exécution, nous donnant aussi la possibilité de le modifier en temps réel tel un VST ou ``plugin''
 [\cite{VST}].
 
 \paragraph {MIDI}
+Overtone permet aussi d'envoyer et recevoir des signaux MIDI par des périphériques externes. Pour les
+test des paramètres, on a implementé un système de modulation avec un dispositif MIDI MPD218 (voir
+Annexe pour démonstration). 
 
 \begin{figure}[h]
     \centerline{\includegraphics[width=9cm]{res/mpd218.png}}
@@ -322,16 +326,52 @@ exécution, nous donnant aussi la possibilité de le modifier en temps réel tel
     }
   \end{figure}
 
-À continuer demain
-\section{Résultats}
+  \section{Résultats}
 
-% [ À FAIRE TABLEAU COMPARATIF DE STYLES]
+  Des morceaux musicaux de plusieurs genres seront manipulés avec notre granulateur. Faut savoir que
+  chaque style musical a des propriétés sonores très différentes, donc les paramètres devront
+  être changés pour chaque style pour trouver un effet optimal. Les paramètres sont $G$ pour la durée
+  d'un grain, $D$ pour le délai entre 2 grains et $T$ pour la durée du trigger de notre UGen \verb+trig+.
 
-On va analyser les morceaux musicaux de différents styles et les paramètres qu'on a du utiliser
-pour 
+  \begin{center}
+    \begin{tabular}{ | m{2cm} | c | c | c | c |}
+      \hline
+      Titre & Style & $G$ & $D$ & $T$ \\
+      \hline
+      <<Smash Bros Brawl Theme>>, Nobuo Uematsu & Orchestre & 200ms & 500ms & 100ms \\
+      \hline
+      <<Digital Love>>, Daft Punk & Electro & 200ms & 600ms & 100ms \\
+      \hline
+      <<Le quattro stagioni>>, Vivaldi & Solo de violon & 330ms & 390ms & 360ms \\
+      \hline
+      <<Cry for Eternity>>, Dragonforce & Power Metal & 230ms & 240ms & 360ms \\
+      \hline
+      <<Let Me Blow Ya Mind>>, Eve  & R\&B & 280ms & 300ms & 360ms \\
+      \hline
+      <<Mission To Mars>>, DJ Fresh  & Dance & 280ms & 300ms & 360ms \\
+      \hline
+    \end{tabular}
+  \end{center}
+  
+  Nous remarquons que pour les pistes avec beaucoup de percussions et peu d'instrumentales ont
+  tendance à mieux fonctionner avec notre granulateur vu les continues discontinuités qui sont
+  provoqués par ces instruments quand ils sont granulés.
+  Donc pour les pistes instrumentales on agrandit la taille du grain pour avoir moins d'artefactes.
 
+  En général les résultats sont assez adéquats et utilisables dans une routine habituelle de mixing.
+    
+  \section{Conclusion}
 
-\section{Remerciements}
+  Nous avons implementé un granulateur basé sur la méthode OLA, utilisé comme base par toutes les méthodes
+  état de l'art. Ce granulateur est modifiable en temps réel grâce à la librairie Overtone. Nous monstrons
+  avec ça qu'on peut utiliser de la technologie VST avancée dans le live-coding.
+
+  Les améliorations à venir seraient d'implémenter le time stretching avec le vocodeur de phases grâce
+  aux UGen \verb+PV_*+ de supercollider qui permettent de faire de la synthèse spectrale avec des
+  buffers comme nous l'avons fait avec le granulateur.
+  
+  
+  \section{Remerciements}
   Je remercie mon prometeur, Bernard Fortz, de m'avoir fait découvrir
   les yeux au monde du live-coding et la programmation fonctionnelle.
 
