@@ -3,9 +3,8 @@
 
 (use 'overtone.inst.drum)
 
-;; Granular live time stretching algorithm (AKA yOLA)
+;; Granular live time stretching algorithm (AKA OLA)
 (defsynth granulator
-  "commentaire à écrire"
   [buf 0 rate 1 gr-dur 0.12 gr-delay 0.25 tr-dur 0.15 start 0 end 1 out-bus 0 loop? 0 amp 1]
   (let [n-frames     (buf-frames buf)
         buf-rate     (buf-rate-scale buf)
