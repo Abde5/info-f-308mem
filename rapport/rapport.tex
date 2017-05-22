@@ -10,14 +10,14 @@
 
 \usepackage[hidelinks]{hyperref}
 
-\title{Time stretching en temps réel pour le live coding}
+\title{Time stretching en temps réel dans le cadre du live coding}
 \author{Abdeselam El-Haman Abdeselam$^{1}$\\
 Superviseur : Bernard Fortz
 \mbox{}\\\\
 $^1$Université Libre de Bruxelles \\
 aelhaman@ulb.ac.be}
 
-%\setlength{\parskip}{0.5em}
+\setlength{\parskip}{0.8em}
 
 \begin{document}
 \maketitle
@@ -29,9 +29,9 @@ aelhaman@ulb.ac.be}
   time-stretching, qui consiste à rallonger ou rétrécir une pièce musicale
   sans changer sa tonalité. Le time-stretching est intéressant dans
   le live-coding lorsqu'on peut modifier les paramétres de celui-ci
-  en temps réel. Dans cet article 2 méthodes de time-stretching avec des
-  approches différentes seront analysées, comparées et utilisées en temps
-  réel dans Overtone.
+  en temps réel. Dans cet article 1 méthode de time-stretching avec des
+  approches différentes sera analysée et utilisée en temps
+  réel avec Overtone.
 
 \end{abstract}
 
@@ -39,7 +39,7 @@ aelhaman@ulb.ac.be}
 
   Depuis le débuts de la musique éléctronique, le ``resampling'' de pièces musicales
   (c'est à dire, la manipulation de celles-ci) a un rôle important pour pouvoir manipuler
-  des pièces musicales (rajouter des filtres, des envelopes, etc \ldots ) [rajouter citation ici].
+  des pièces musicales (rajouter des filtres, des envelopes, etc \ldots ).
 
   Un son est un signal qui est défini par sa durée, sa fréquence et son amplitude. La fréquence
   définit son ``pitch'' ou tonalité. La tonalité d'un son est plus grave si la fréquence est plus
@@ -51,7 +51,7 @@ aelhaman@ulb.ac.be}
 
   Cette manipulation aura comme résultat aussi un effet sécondaire. La prolongation du signal
   provoquera aussi que la fréquence de ce signal soit modifié, et avec ça, un changement
-  de tonalité non désiré se produira.
+  de tonalité non désiré se produira [\cite{RESAMPLING}].
 
   \begin{figure}[h]
     \centerline{\includegraphics[width=9cm]{res/fig1.eps}}
@@ -66,35 +66,141 @@ aelhaman@ulb.ac.be}
   implémentés pour l'application en temps réel de cette technique sur Overtone, une librairie pour
   qui a été conçue pour le traitement et synthèse de son. 
 
-
-
-\begin{comment}
-  Parler du son c'est quoi frequence etc
-
-  C'est quoi le problème time stretching?
-  À quoi est-il dû?
-\end{comment}
-
 \section{État de l'art}
-\begin{comment}
-  Techniques, un peu d'histoire?
-\end{comment}
+\subsection{Méthode OLA}
+\paragraph{}En général la méthode utilisée dans les algorithmes TSM se résume en plusieures étapes
+distinctes.
 
-\subsection{Traitement du temps}
-\begin{comment}
-Parler de SOLA, PSOLA...
-\end{comment}
+\paragraph{Décomposer le signal d'entrée en grains} Le signal d'entrée est décomposé en
+\emph{grains} [citer article] d'une taille rélativement petite et fixe. Chacun de ces ces grains sa un décalage \emph{hopsize} $H_{a}$ (hopsize d'analyse). On peut représenter ça tel que:
+$$x_m(r) = x(r + mH_{a}) : r \in [-N/2 : N/2 -1]$$
+où $x$ est notre signal d'entrée en format discret de taille $L \in \mathbb{Z}_{\geq0}$. $N$ est la
+taille du grain $x_m$.
 
-\subsection{Traitement des fréquences}
-\begin{comment}
-  Parler du Vocodeur de phases, comment c'est utilisé etc...
-\end{comment}
-\subsection{Traitement du temps et des fréquences}
-\begin{comment}
-  On parle des techniques comme PVSOLA -> SOLA en prenant en compte la phase etc
-\end{comment}
+La taille de ces grains doît est généralement d'une taille entre 50ms et 100ms. Ceci est important
+pour trouver le \emph{pitch local} dans l'intervale $[mH_{a} - N/2 : mH_{a} + N/2 +1]$. Si l'intervale
+est grand, plusieures tonalités apparaissent dans cet intervale, donc ce grain n'est pas représentatif.
+\paragraph{Modifier le hopsize} Une fois le signal décomposé, avec l'information de pitch dans chaque grain, on va définir un nouveau hopsize $H_{s}$ qui va servir à récomposer ces grains. Ce $H_{s}$ est défini tel que :
 
-\section{Méthodes}
+$$H_{s} = \alpha H_{a}$$
+
+Dans lequel $\alpha$ représente le \emph{facteur d'échelle}.
+L'effet du TSM est fixé par le \emph{facteur d'échelle}. Pour un effet de rétrécissement:
+$$\alpha < 1$$
+
+Au contraire, pour un effet d'élargissement:
+$$\alpha > 1$$
+
+\paragraph{Superposition de grains}
+
+Avec $H_{s}$ défini, on peut réconstruire le signal résultat de cette modification, en récomposant
+le nouveau signal avec les \emph{grains} avec un décalage de $H_{s}$ au lieu de $H_{a}$. Alors ces
+grains sont superposés avec une différence de $H_{s}$ et additionés. C'est à dire:
+
+$$ y(t) = \sum_{m \in \mathbb{Z}} x_{m}(t-mH_{s})$$
+
+où $y(t)$ est le signal de sortie par rapport au temps $t$.
+u
+\paragraph {Fenêtrage}
+
+Hormis le fait que cette méthode est utilisée comme base des algorithmes qui seront illustrés plus
+tard dans ce document, elle crée beaucoup d'\emph{artéfacts} à cause d'un déphasage entre les
+grains qui provoque des discontinuités qui se traduit par des sons lourds et courts qui n'étaient pas
+dans le signal initial. Ceci est dû à cause d'un déphasage important entre les grains
+puisque $H_{s} \neq H_{a}$.
+
+\begin{figure}[h]
+    \centerline{\includegraphics[width=9cm]{res/artifact.png}}
+    \caption{\label{fig:artifact}Exemple d'artefact qui se produit quand le même grain d'analyse est
+      utilisé pour reconstruire le signal avec le tempo modifié [\cite{TSMreview}]. }
+  \end{figure}
+  
+L'algorithme \emph{OLA} se base sur cette méthode basique et rajoute des fénêtres pour avoir une
+fluidité dans la transition d'un grain à un autre. Les grains $x_m$ sont donc appliqués à une fonction
+de fênetrage $w$ qui est définie:
+
+$$ w(r) = \frac{1}{2} \bigg(1 - cos \bigg(\frac{2\pi(r + N/2)}{N-1}\bigg) \bigg) $$
+
+Où $w$ est la \emph{fenêtre de Hanning}.
+
+Cette fenêtre a la propriété que
+
+$$ \sum_{n \in \mathbb{Z}} w \bigg( r - n \frac{N}{2} \bigg) = 1 $$
+
+qui rassure la continuité d'amplitude dans le signal résultant. 
+
+\subsection{Méthode WSOLA}
+
+Le problème de la méthode OLA est que, étant le hopsize $H_a$ fixe, chaque séparation entre grains
+est le même, peu importe la différence de phase quand les grains sont décalés et réassemblés par
+rapport au hopsize $H_s$.
+
+L'algorithme \emph{WSOLA} [\cite{WSOLA}] régle ce problème en rajoutant un marge de décalage
+$\Delta_m$ au hopsize $H_a$ afin qu'entre les grains $x_m$ et $x_{m+1}$ il y ait un minimum de
+discontinuités.
+
+Ce décalage $\Delta_m$ est défini étant la position dans laquelle les parties superposées des grains
+$x_m$ et $x_{m+1}$ se ressemblent au plus. Pour ceci nous devons définit $\Delta_{max}$ étant le
+maximum que la valeur de $\Delta_m$ doit avoir. Alors $\Delta_m \in [-\Delta_{max} : \Delta_{max}]$.
+Nous avons alors le nouveau grain de synthèse
+$$ y_m(r) = x(r + mH_a + \Delta_m) \hspace{0.1cm} : \hspace{0.1cm} r \in [-N/2 : N/2 -1] $$
+qui va être superposé en suivant le procédé \emph{OLA} pour réassembler les grains décrit avant.
+
+\paragraph{Choix du décalage} $\Delta_m$ est choisi en trouvant la meilleure resultat si on applique
+une fonction de corrélation entre les parties des grains qui se superposent. Plusieures formules
+peuvent être choisies pour trouver une corrélation entre 2 variables (une regréssion linéaire, etc
+\dots). On peut utiliser le coefficient corrélation croisée pour cette fin:
+\begin{multline}
+  c_c (m,\delta) = \sum^{N-1}_{n=0} (n + \tau^{-1} ((m-1)N) + \Delta_{m-1}+N) \\
+  x(n + \tau^{-1}(mx_m)+\delta)
+\end{multline}
+avec $max(m,\delta) \rightarrow \delta=\Delta_m$ et $\tau$ notre fonction de TSM.
+\subsection{Méthode vocodeur de phases}
+
+WSOLA et OLA manipulent le signal dans le temps, et en particulier la méthode WSOLA arrive à trouver
+des résultats assez positifs pour garder la périodicité du signal. Ceci va éviter les artefacts d'un
+mauvais ``overlap'' car les ondes sinusoïdales aurant toujours une périodicité continue.
+
+Le \emph{vocodeur de phases} [\cite{Flanagan}] est une méthode qui va prendre des grains comme les méthodes précédentes
+mais va décomposer ce grain en plusieures sinusoïdales, qui pourront être rallongées. Tout signal peut
+être décomposé en signaux sinusoïdaux grâce à la \emph{transformée de Fourier} décrite pour un
+signal discret telle que:
+
+$$ X(k) = \sum^{N-1}_{n=0} x(n)e^{-j\frac{2 \pi}{N}kn}  \hspace{1cm}  k = 0 , \dots,N-1$$
+
+Une autre approche qui serait plus approprié ici est la \emph{Short Time Fourier Transform} (STFT)
+qui sert à trouver des informations locales de courte durée pour avoir une meilleure précision:
+
+$$ X(m,k) = \sum^{N / 2 - 1}_{ r = N/2} x_m{r} w(r) exp(-2\pi i k r / N)$$
+
+Le calcul de cette transformée n'est pas très efficace, c'est pour ça qu'il existe l'algorithme
+\emph{Fast Fourier Transform} (FFT)  [\cite{FFT}] , qui s'occupe de calculer cette STFT et son
+inverse (ISTFT). La FFT impose que que le grain analysé soit d'une taille d'une puissance de 2
+(512, 1024, 2048, 4096).
+
+Dans ce cas, on définit $X^{Mod}$ un frame d'un STFT modifié. Faudra reconstruire le signal de sortie
+$y$ qui correspond au $X^{Mod}$. Pour ceci, on doit trouver l'inverse comme ceci:
+
+$$x_m^{Mod}(r) = \frac{1}{N} \sum_{k=0}^{N-1} X^{Mod}(m,k) exp(2\pi ikr / N)$$
+Et puis on a:
+$$y_m = \frac{w(r) x_m^{Mod}(r)}{\sum_{n \in \mathbb{Z}} w(r - nH_s)^2}$$
+qu'on pourra utiliser pour reconstruir $y$ de la même façon que pour les méthodes OLA.
+
+\paragraph{Déphasage} Les grains $X^{Mod}$ consécutifs auront des décalages de phase quand ils seront
+superposés (cf Figure 3),
+ce qui provoque des artefacts. Pour résoudre ce problème, le \emph{vocodeur de phases} décalera encore
+la phase des grains modifiés pour avoir une continuité de phase entre les grains superposés.
+
+\begin{figure}[h]
+    \centerline{\includegraphics[width=9cm]{res/phasevocoder.png}}
+    \caption{\label{fig:phasevocoder}
+      Fonctionnement du vocodeur de phases [\cite{TSMreview}]. (a) Les frames sont décomposés par le STFT. (b) Les phases des 2 frames sont clairement pas les mêmes si on les overlap sans les manipuler. (c) La phase des frames sont propagées pour avoir une correspondence. (d) ISTFT pour reconstruire le signal après avoir fait l'overlap des frames modifiés.}
+  \end{figure}
+
+
+  % talk about clojure / supercollider / overtone now 
+  
+\section{Méthode développée}
 
 Les 2 méthodes qui ont été développées sont la granulation et le vocodeur de phases.
 Ces 2 méthodes ont été utilisées en utilisant la fonction le système de génération de
@@ -110,13 +216,18 @@ synthétiseurs ``defsynth'' d'Overtone.
 
 \subsection{Overtone}
 \begin{comment}
+  Parler d'Overtone-sup  Parler d'Overtone-supercollider, les methodes que ça nous donne etc
   Parler d'Overtone-supercollider, les methodes que ça nous donne etc
+ercollider, les methodes que ça nous donne etc
   [CITER ARTICLE SONICPI -> OVERTONE DE SAM AARON]
 \end{comment}
 
 \subsection{AWESOME OVERTONE TWEAK THINGS}
-\subsection{TD-SOLA}
-\subsection{Vocodeur de phases}
+\subsection{OLA approach / granulator}
+[Expliquer ce que c'est un granulator]
+
+Un granulator a été implementé sur Overtone en utilisant les UGENs suivants
+de SuperCollider:
 
 
 \section{Résultats}
@@ -129,7 +240,10 @@ synthétiseurs ``defsynth'' d'Overtone.
   pour partager avec eux tout ce que j'ai appris lors de mes recherches
   pour ce mémoire.
 
+  [Remerciements à Antoine]
+
 \footnotesize
+
 \bibliographystyle{apalike}
 \bibliography{rapport}
 
