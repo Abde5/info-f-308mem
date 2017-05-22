@@ -26,26 +26,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;; TESTS ;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; load buffer with wav
-(def digitalbuf (load-sample "eternity.wav"))
+(def digitalbuf (load-sample "digital.wav"))
 ;; play sample with the granulator
 (def playing-granulator (granulator digitalbuf))
 
-
 ;; control parameters real-time (rate, delay between grains, etc...)
-; smash
 (ctl playing-granulator :gr-dur 0.15 :gr-delay 0.5 :tr-dur 0.1)
 
-; daft
-(ctl playing-granulator :gr-dur 0.2 :gr-delay 0.6 :tr-dur 0.1)
-
-; vivaldi
-(ctl playing-granulator :gr-dur 0.33 :gr-delay 0.39 :tr-dur 0.36)
-
-; metallica
-(ctl playing-granulator :gr-dur 0.23 :gr-delay 0.24 :tr-dur 0.36)
-
 (stop)
-
 
 ;;;;;;;;;;;; MPD bindings for realtime parameter modify
 (on-event [:midi :control-change]
